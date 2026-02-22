@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisteria Network 🌺 - Minecraft Server</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --wisteria-primary: #9b59b6;
+            --wisteria-light: #d2b4de;
+            --wisteria-dark: #6c3483;
+            --wisteria-pink: #e8daef;
+            --minecraft-green: #5d8c22;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --gold: #ffd700;
+            --diamond: #00ffff;
+            --emerald: #50c878;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e8daef 0%, #d2b4de 25%, #bb8fce 50%, #9b59b6 75%, #8e44ad 100%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+            position: relative;
+            color: #2c3e50;
+        }
+
+        /* Animated Background Particles */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            opacity: 0.6;
+            animation: float linear infinite;
+        }
+
+        .wisteria-leaf {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #9b59b6, #e8daef);
+            border-radius: 0 50% 0 50%;
+            transform: rotate(45deg);
+            box-shadow: 0 0 10px rgba(155, 89, 182, 0.3);
+        }
+
+        .wisteria-petal {
+            width: 15px;
+            height: 15px;
+            background: radial-gradient(circle, #d2b4de, #9b59b6);
+            border-radius: 50% 0 50% 50%;
+            animation: floatPetal linear infinite;
+        }
+
+        .minecraft-block {
+            width: 24px;
+            height: 24px;
+            background: #5d8c22;
+            border: 3px solid #3d5c16;
+            box-shadow: inset -3px -3px 0 rgba(0,0,0,0.2), inset 3px 3px 0 rgba(255,255,255,0.2);
+            image-rendering: pixelated;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes floatPetal {
+            0% {
+                transform: translateY(-100px) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(50vh) translateX(50px) rotate(180deg);
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) translateX(-50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Glow Effect */
+        .glow-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(232, 218, 239, 0.3) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            position: relative;
+        }
+
+        .server-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            color: #fff;
+            text-shadow: 
+                4px 4px 0px var(--wisteria-dark),
+                0 0 20px rgba(155, 89, 182, 0.8),
+                0 0 40px rgba(155, 89, 182, 0.4);
+            animation: titlePulse 3s ease-in-out infinite;
+            line-height: 1.4;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { 
+                transform: scale(1);
+                text-shadow: 
+                    4px 4px 0px var(--wisteria-dark),
+                    0 0 20px rgba(155, 89, 182, 0.8),
+                    0 0 40px rgba(155, 89, 182, 0.4);
+            }
+            50% { 
+                transform: scale(1.02);
+                text-shadow: 
+                    4px 4px 0px var(--wisteria-dark),
+                    0 0 30px rgba(155, 89, 182, 1),
+                    0 0 60px rgba(155, 89, 182, 0.6),
+                    0 0 80px rgba(232, 218, 239, 0.4);
+            }
+        }
+
+        /* Button Container */
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            padding: 15px 30px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 4px 0 rgba(0,0,0,0.2),
+                0 6px 20px rgba(0,0,0,0.2);
+            image-rendering: pixelated;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #5d8c22, #4a7020);
+            color: white;
+            border: 4px solid #3d5c16;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #7289da, #5865f2);
+            color: white;
+            border: 4px solid #4752c4;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 0 rgba(0,0,0,0.2),
+                0 8px 30px rgba(0,0,0,0.3),
+                0 0 20px rgba(255,255,255,0.3);
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 
+                0 0 0 rgba(0,0,0,0.2),
+                0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.5rem;
+            color: #fff;
+            text-align: center;
+            margin: 40px 0 30px;
+            text-shadow: 3px 3px 0px var(--wisteria-dark);
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--wisteria-light), transparent);
+            border-radius: 2px;
+        }
+
+        /* Cards Section */
+        .cards-section {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px;
+            perspective: 1000px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 
+                0 8px 32px rgba(31, 38, 135, 0.2),
+                inset 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 20px 60px rgba(155, 89, 182, 0.4),
+                0 0 40px rgba(232, 218, 239, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+            transition: transform 0.3s;
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .card h2 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+        }
+
+        .card p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+
+        .card-glow {
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #9b59b6, #e8daef, #9b59b6, #d2b4de);
+            border-radius: 20px;
+            opacity: 0;
+            z-index: -1;
+            filter: blur(10px);
+            transition: opacity 0.3s;
+        }
+
+        .card:hover .card-glow {
+            opacity: 0.6;
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { filter: blur(10px) hue-rotate(0deg); }
+            100% { filter: blur(10px) hue-rotate(360deg); }
+        }
+
+        /* Staff Section */
+        .staff-section {
+            padding: 40px 20px;
+            margin-top: 20px;
+        }
+
+        .staff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .staff-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+        }
+
+        .staff-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--gold), var(--diamond), var(--emerald));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .staff-card.founder::before { background: var(--gold); opacity: 1; }
+        .staff-card.cofounder::before { background: var(--diamond); opacity: 1; }
+        .staff-card.ceo::before { background: var(--emerald); opacity: 1; }
+
+        .staff-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 
+                0 20px 60px rgba(155, 89, 182, 0.5),
+                0 0 40px rgba(232, 218, 239, 0.4);
+        }
+
+        .staff-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--wisteria-light), var(--wisteria-primary));
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            border: 4px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .staff-avatar::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .staff-card h3 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+        }
+
+        .staff-role {
+            font-size: 0.9rem;
+            font-weight: 700;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .staff-role.founder { 
+            background: rgba(255, 215, 0, 0.3); 
+            color: #ffd700; 
+            border: 2px solid #ffd700;
+        }
+        .staff-role.cofounder { 
+            background: rgba(0, 255, 255, 0.2); 
+            color: #00ffff; 
+            border: 2px solid #00ffff;
+        }
+        .staff-role.ceo { 
+            background: rgba(80, 200, 120, 0.3); 
+            color: #50c878; 
+            border: 2px solid #50c878;
+        }
+
+        .staff-desc {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .staff-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            animation: floatBadge 2s ease-in-out infinite;
+        }
+
+        @keyframes floatBadge {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 40px;
+        }
+
+        footer .heart {
+            color: #e74c3c;
+            display: inline-block;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Music Toggle */
+        .music-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--glass-border);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            z-index: 100;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+
+        .music-toggle.muted {
+            opacity: 0.6;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(46, 204, 113, 0.95);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 3px solid #27ae60;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Floating Blocks Animation */
+        .floating-blocks {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .float-block {
+            position: absolute;
+            animation: floatBlock 15s ease-in-out infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes floatBlock {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .server-title {
+                font-size: 1.2rem;
+            }
+            
+            .btn {
+                font-size: 0.7rem;
+                padding: 12px 20px;
+            }
+            
+            .cards-section, .staff-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .card, .staff-card {
+                padding: 30px 20px;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Particle Effects -->
+    <div class="particles-container" id="particles"></div>
+    
+    <!-- Glow Overlay -->
+    <div class="glow-overlay"></div>
+
+    <!-- Floating Minecraft Blocks -->
+    <div class="floating-blocks" id="floatingBlocks"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <header>
+            <h1 class="server-title">Wisteria Network 🌺</h1>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="copyIP()">
+                    <span>📋</span> Copy IP
+                </button>
+                <a href="https://discord.gg/Hxp7PBbd" target="_blank" class="btn btn-secondary">
+                    <span>💬</span> Join Discord
+                </a>
+            </div>
+        </header>
+
+        <!-- Gamemodes Section -->
+        <h2 class="section-title">🎮 Gamemodes</h2>
+        <section class="cards-section">
+            <div class="card">
+                <div class="card-glow"></div>
+                <span class="card-icon">🌿</span>
+                <h2>Survival</h2>
+                <p>Explore our Wisteria-themed survival world with custom biomes, unique mobs, and enchanted forests waiting to be discovered.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-glow"></div>
+                <span class="card-icon">💰</span>
+                <h2>Economy</h2>
+                <p>Build your wealth in our player-driven economy! Trade, sell, and compete to become the richest player on the server.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-glow"></div>
+                <span class="card-icon">🏆</span>
+                <h2>Mini-Games</h2>
+                <p>Compete in exciting mini-games and special game events! From parkour to PvP, earn rewards and climb the leaderboards.</p>
+            </div>
+        </section>
+
+        <!-- Staff Section -->
+        <div class="staff-section">
+            <h2 class="section-title">👑 Our Team</h2>
+            <div class="staff-grid">
+                <!-- Founder -->
+                <div class="staff-card founder">
+                    <span class="staff-badge">👑</span>
+                    <div class="staff-avatar">🎩</div>
+                    <h3>Jaytee</h3>
+                    <span class="staff-role founder">Founder</span>
+                    <p class="staff-desc">Visionary founder of Wisteria Network, building dreams since day one.</p>
+                </div>
+
+                <!-- Co-Founder -->
+                <div class="staff-card cofounder">
+                    <span class="staff-badge">💎</span>
+                    <div class="staff-avatar">⚔️</div>
+                    <h3>Chxri</h3>
+                    <span class="staff-role cofounder">Co-Founder</span>
+                    <p class="staff-desc">Master architect and co-founder, shaping the world alongside Jaytee.</p>
+                </div>
+
+                <!-- CEO 1 -->
+                <div class="staff-card ceo">
+                    <span class="staff-badge">🌟</span>
+                    <div class="staff-avatar">☁️</div>
+                    <h3>Cloudsanity</h3>
+                    <span class="staff-role ceo">CEO</span>
+                    <p class="staff-desc">Leading operations with strategic vision and endless creativity.</p>
+                </div>
+
+                <!-- CEO 2 -->
+                <div class="staff-card ceo">
+                    <span class="staff-badge">🚀</span>
+                    <div class="staff-avatar">🎯</div>
+                    <h3>YoboyRyl</h3>
+                    <span class="staff-role ceo">CEO</span>
+                    <p class="staff-desc">Driving innovation and community engagement to new heights.</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2026 Wisteria Network 🌺 | Made with <span class="heart">💜</span> and Minecraft vibes</p>
+        </footer>
+    </div>
+
+    <!-- Music Toggle -->
+    <button class="music-toggle" id="musicToggle" onclick="toggleMusic()" title="Toggle Music">
+        🎵
+    </button>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">IP Copied to Clipboard! 📋</div>
+
+    <!-- Audio Element -->
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Server IP
+        const SERVER_IP = 'wisterianetwork.usga.me';
+
+        // Initialize when page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 1000);
+            
+            createParticles();
+            createFloatingBlocks();
+        });
+
+        // Copy IP Function
+        function copyIP() {
+            navigator.clipboard.writeText(SERVER_IP).then(() => {
+                showToast();
+            }).catch(err => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = SERVER_IP;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast();
+            });
+        }
+
+        // Show Toast Notification
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Music Toggle
+        let isPlaying = false;
+        const music = document.getElementById('bgMusic');
+        const musicToggle = document.getElementById('musicToggle');
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                musicToggle.innerHTML = '🔇';
+                musicToggle.classList.add('muted');
+            } else {
+                music.volume = 0.3;
+                music.play().catch(e => console.log('Audio play failed:', e));
+                musicToggle.innerHTML = '🎵';
+                musicToggle.classList.remove('muted');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Create Floating Particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                setTimeout(() => {
+                    createParticle(container);
+                }, i * 300);
+            }
+
+            // Continue creating particles
+            setInterval(() => {
+                createParticle(container);
+            }, 800);
+        }
+
+        function createParticle(container) {
+            const types = ['wisteria-leaf', 'wisteria-petal', 'minecraft-block'];
+            const type = types[Math.floor(Math.random() * types.length)];
+            const particle = document.createElement('div');
+            particle.className = `particle ${type}`;
+            
+            // Random positioning
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            
+            // Random size variation
+            const scale = Math.random() * 0.5 + 0.5;
+            particle.style.transform = `scale(${scale})`;
+            
+            container.appendChild(particle);
+
+            // Remove after animation
+            setTimeout(() => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            }, 20000);
+        }
+
+        // Create Floating Minecraft Blocks
+        function createFloatingBlocks() {
+            const container = document.getElementById('floatingBlocks');
+            const positions = [
+                { left: '10%', top: '20%', delay: '0s' },
+                { left: '85%', top: '40%', delay: '2s' },
+                { left: '15%', top: '70%', delay: '4s' },
+                { left: '80%', top: '80%', delay: '1s' },
+                { left: '50%', top: '15%', delay: '3s' }
+            ];
+
+            positions.forEach((pos, index) => {
+                const block = document.createElement('div');
+                block.className = 'minecraft-block float-block';
+                block.style.left = pos.left;
+                block.style.top = pos.top;
+                block.style.animationDelay = pos.delay;
+                block.style.transform = `scale(${0.8 + Math.random() * 0.4})`;
+                
+                // Different colors for variety
+                const colors = ['#5d8c22', '#8b4513', '#808080', '#daa520', '#cd853f'];
+                const color = colors[index % colors.length];
+                block.style.background = color;
+                block.style.borderColor = adjustColor(color, -40);
+                
+                container.appendChild(block);
+            });
+        }
+
+        // Helper to darken color for border
+        function adjustColor(color, amount) {
+            return color; // Simplified for this implementation
+        }
+
+        // Add parallax effect on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.card, .staff-card');
+            const mouseX = e.clientX / window.innerWidth - 0.5;
+            const mouseY = e.clientY / window.innerHeight - 0.5;
+
+            cards.forEach((card, index) => {
+                const speed = (index + 1) * 5;
+                const x = mouseX * speed;
+                const y = mouseY * speed;
+                card.style.transform = `translateX(${x}px) translateY(${y}px)`;
+            });
+        });
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe cards
+        document.querySelectorAll('.card, .staff-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
